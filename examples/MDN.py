@@ -40,5 +40,5 @@ directedGraph = G
 bipartiteGraph =toBipartite(directedGraph)
 
 structuralcontrol = StructuralControl(directedGraph, bipartiteGraph)
-MDN = structuralcontrol.Enum_Maximum_Matching()
-print MDN
+structuralcontrol.Enum_Maximum_Matching()
+print structuralcontrol.minimum_driver_nodes

@@ -32,6 +32,8 @@ class StructuralControl:
     def __init__(self, directedGraph, bipartite):
         self.DG = directedGraph
         self.bipartite = bipartite
+        self.minimum_driver_nodes = []
+
 
     def samplingWeight(self, times):
         """Sampling the MCM of GcsP
@@ -635,10 +637,11 @@ class StructuralControl:
         outPutNodes = filter(lambda res: res[1]['label']=='driver',self.DG.nodes(data=True))
 
         #print "drivers:",[i for i, a in outPutNodes]
-        # ADAM
         print "MDS:",sorted(list(set([i for i, a in outPutNodes])))
+        self.minimum_driver_nodes.append(sorted(list(set([i for i, a in outPutNodes]))))
  
-        return outPutNodes, sorted(list(set([i for i, a in outPutNodes])))
+        return outPutNodes
+
     def Enum_Maximum_Matching(self):
         """main function of enumerate all maximum matching in G'cs(P)
 
