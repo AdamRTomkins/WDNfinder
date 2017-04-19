@@ -635,8 +635,10 @@ class StructuralControl:
         outPutNodes = filter(lambda res: res[1]['label']=='driver',self.DG.nodes(data=True))
 
         #print "drivers:",[i for i, a in outPutNodes]
+        # ADAM
         print "MDS:",sorted(list(set([i for i, a in outPutNodes])))
-        return outPutNodes
+ 
+        return outPutNodes, sorted(list(set([i for i, a in outPutNodes])))
     def Enum_Maximum_Matching(self):
         """main function of enumerate all maximum matching in G'cs(P)
 
@@ -647,8 +649,7 @@ class StructuralControl:
         GcsP = copy.deepcopy(self.bipartite)
         #step1. find a maximal matching M of G, and output M
         self.__matchNetwork(GcsP)
-        self.__outPutMatching(GcsP)
-
+        mdn = self.__outPutMatching(GcsP)
         G = self.__getDGM(GcsP)
         #step2: trim unnecessary edges from G by a strongly connected component decomposition algorithm with D(G,M)
         self.__trim(G)
@@ -656,6 +657,7 @@ class StructuralControl:
         #step3: call iteration to enumerate
         self.__Enum_Maximum_Matchings_Iter(GcsP, G)
 
+        return mdn
     def __Enum_Maximum_Matchings_Iter(self, GcsP, G):
         """iteration of enumerate perfect matchings in Gcs(P)
 

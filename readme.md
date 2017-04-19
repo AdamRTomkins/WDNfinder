@@ -1,5 +1,7 @@
 # WDNfinder: a method for minimum driver node detection 
 
+a packaged version of https://github.com/dustincys/WDNfinder
+
 ## Requires
 
 - python2.7
