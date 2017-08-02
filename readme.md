@@ -2,6 +2,11 @@
 
 a packaged version of https://github.com/dustincys/WDNfinder
 
+add WDN folder to python path for easy installation
+export PYTHONPATH="${PYTHONPATH}:...../WDNfinder"
+
+
+
 ## Requires
 
 - python2.7

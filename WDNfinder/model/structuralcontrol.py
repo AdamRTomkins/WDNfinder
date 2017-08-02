@@ -24,6 +24,8 @@ import networkx
 import copy
 import random
 import Queue
+import pickle
+from numpy.random import randint
 
 class StructuralControl:
 
@@ -34,6 +36,10 @@ class StructuralControl:
         self.bipartite = bipartite
         self.minimum_driver_nodes = []
 
+        self.id = randint(0,10000,1)
+
+        self.node_total = {}
+        self.mdshash = {}
 
     def samplingWeight(self, times):
         """Sampling the MCM of GcsP
@@ -637,9 +643,25 @@ class StructuralControl:
         outPutNodes = filter(lambda res: res[1]['label']=='driver',self.DG.nodes(data=True))
 
         #print "drivers:",[i for i, a in outPutNodes]
-        print "MDS:",sorted(list(set([i for i, a in outPutNodes])))
-        self.minimum_driver_nodes.append(sorted(list(set([i for i, a in outPutNodes]))))
+        #print "MDS:",sorted(list(set([i for i, a in outPutNodes])))
+
+        # Check this set is unique        
+        mds_set = frozenset(set([i for i, a in outPutNodes]))
+        fr = hash(mds_set)
+        if fr not in self.mdshash:
+            #print "MDS:",sorted(list(set([i for i, a in outPutNodes])))
+            self.mdshash[fr] = []
+            for x in mds_set:
+                if x not in self.node_total:
+                    self.node_total[x] = 1
+                else:
+                    self.node_total[x] += 1
+
+            #if len(self.mdshash.keys()) % 100 == 0:
+            pickle.dump( self.node_total, open( "%s_node_totals_%s.p" % (self.id, len(self.mdshash)), "wb" ) )
+
  
+
         return outPutNodes
 
     def Enum_Maximum_Matching(self):
@@ -653,12 +675,16 @@ class StructuralControl:
         #step1. find a maximal matching M of G, and output M
         self.__matchNetwork(GcsP)
         mdn = self.__outPutMatching(GcsP)
+
         G = self.__getDGM(GcsP)
         #step2: trim unnecessary edges from G by a strongly connected component decomposition algorithm with D(G,M)
         self.__trim(G)
 
         #step3: call iteration to enumerate
         self.__Enum_Maximum_Matchings_Iter(GcsP, G)
+
+        pickle.dump( self.node_total, open( "final_%s_node_totals.p" % self.id, "wb" ) )
+        pickle.dump( self.mdshash, open( "final_%s_hashes.p" % self.id, "wb" ) )
 
         return mdn
     def __Enum_Maximum_Matchings_Iter(self, GcsP, G):
